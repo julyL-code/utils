@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<script src="../dist/utils.js"></script>
+<style>
+    .group {
+        overflow: hidden;
+        padding: 5px 20px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    i {
+        float: left;
+        padding-right: 20px;
+    }
+
+    .correct {
+        color: #47c68c;
+    }
+
+    .uncorrect {
+        color: #e88585;
+    }
+
+    .result {
+        padding: 10px 0 20px 100px;
+    }
+</style>
+
+<body>
+    <script>
+        function add(a, b) {
+            return a + b;
+        }
+        var body = document.body;
+        var test = function (needTest, shouldtobe) {
+            var con = document.createElement("div"),
+                result = shouldtobe ? it(needTest, shouldtobe) : it(needTest);
+            con.innerHTML = (result.equal ? "<i>√</i>" : "<i>×</i>") + result.html;
+            con.className = 'group';
+            con.classList.add(result.equal ? 'correct' : 'uncorrect');
+            body.appendChild(con);
+        }
+        var it = function (fn, shouldtobe) {
+            var r = eval("utils." + fn),
+                item = "<div class='it'>" + fn + "</div>  " +
+                "<div class='result'>=>" + addSpace(1) + (typeof r == 'object' ? format(r) : r) +
+                "</div>";
+            return {
+                html: item,
+                equal: arguments.length == 2 ? r == shouldtobe : true
+            };
+        }
+
+        function addSpace(num) {
+            var i = 0,
+                space = '';
+            while (i < num) {
+                i++;
+                space += "&nbsp;&nbsp;&nbsp;&nbsp;"
+            }
+            return space;
+        }
+
+        function format(obj, zindex) {
+            var str = "",
+                objStr,
+                zindex = zindex || 3,
+                temp = zindex;
+            for (var i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    if (typeof obj[i] == 'object') {
+                        objStr = format(obj[i], ++zindex);
+                    } else {
+                        objStr = obj[i];
+                    }
+                    str += addSpace(temp) + i + " : " + objStr + ",</br>"
+                    str = str.replace(/,<\/br>$/, '</br>');
+                }
+            }
+            if (typeof obj == 'object') {
+                if (Array.isArray(obj)) {
+                    str = "[</br>" + str + addSpace(temp - 1) + "]";
+                } else {
+                    str = "{</br>" + str + addSpace(temp - 1) + "}";
+                }
+            }
+            return str;
+        }
+    </script>
+    <script src='./test.js'></script>
+</body>
+
+</html>
